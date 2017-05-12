@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-class trigger():
+
+class Trigger():
     
     def __init__(self,slot):
         self.cur_time = -1
         self.slot = slot
-
 
     def time_trigger(self):
         self.cur_time += 1
@@ -15,8 +15,9 @@ class trigger():
         else:
             return False
 
-    def url_trigger(self,url_pool):
-        if len(url_pool.url_queue) == 0:
+    @staticmethod
+    def url_trigger(url_pool):
+        if len(url_pool.get_url_queue()) == 0:
             return False
         else:
             return True

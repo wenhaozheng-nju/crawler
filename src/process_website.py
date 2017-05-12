@@ -10,14 +10,19 @@ USER_AGENTS = ['Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gec
                'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1',
                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A']
 
-phantomjs_path = '/home/zwh/software/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
-class website(object):
-    
+phantomjs_path = '/Users/zhouyh/phantomjs-2.1.1-macosx/bin/phantomjs'
+
+
+class Website(object):
+
+    dcap = dict(DesiredCapabilities.PHANTOMJS)
+    dcap["phantomjs.page.settings.loadImages"] = False
+    dcap["phantomjs.page.settings.userAgent"] = (random.choice(USER_AGENTS))
+    driver = webdriver.PhantomJS(phantomjs_path, desired_capabilities=dcap)
+
     def __init__(self):
-        dcap = dict(DesiredCapabilities.PHANTOMJS)
-        dcap["phantomjs.page.settings.loadImages"] = False
-        dcap["phantomjs.page.settings.userAgent"] = (random.choice(USER_AGENTS))
-        self.driver = webdriver.PhantomJS(phantomjs_path,desired_capabilities=dcap)
+
+        pass
         # self.fetcher = Fetcher(
         #             user_agent='phantomjs', # user agent
         #             phantomjs_proxy='http://localhost:12306', # phantomjs url
@@ -35,14 +40,15 @@ class website(object):
             texts.append(text)
         return texts
 
-    def qq_news_process(self,url):
-        soup = self.visit_url(url)
+    @staticmethod
+    def qq_news_process(url):
+        soup = Website.visit_url(url)
         url_ele = url.split("/")
         domain_name = url_ele[2]
         #print("domin_name is:",domain_name) #test
         if len(url_ele) >= 3 and url_ele[-2].isdigit() and url_ele[-3] == "a":
             print ("it is content page!")
-            content = self.handle_content_page(soup)
+            content = Website.handle_content_page(soup)
             content['time'] = url_ele[-2]
             return content
         else:
@@ -56,19 +62,21 @@ class website(object):
                     pass
             #print(hrefs) #test
             return hrefs
-    
-    def visit_url(self,url,comment_flag=False):
+        # return url
+
+    @staticmethod
+    def visit_url(url,comment_flag=False):
         # content_dict = self.fetcher.phantomjs_fetch(url)
         # print content_dict
-        self.driver.get(url)
+        Website.driver.get(url)
         if comment_flag:
-            self.driver.switch_to.frame('commentIframe')   ##orz
-        soup = BeautifulSoup(self.driver.page_source,'html.parser')
+            Website.driver.switch_to.frame('commentIframe')   ##orz
+        soup = BeautifulSoup(Website.driver.page_source,'html.parser')
         print(url,"is visited done!")
         return soup
 
-
-    def handle_content_page(self,page):
+    @staticmethod
+    def handle_content_page(page):
         content = {}
         content['title'] = page.find('title').get_text()
         content['body'] = ""
@@ -82,7 +90,7 @@ class website(object):
                     #print val
                     content['body'] += p.get_text().strip()+"\t"
 
-        #print content['body']
+        # print content['body']
 
         content['body'] = content['body'].replace("\n","\t")
         comment_url = ""
@@ -95,8 +103,8 @@ class website(object):
         if len(comment_url) == 0:
             content['comment'] = []
         else:
-#        comment_url = comment_url['href']
-            comment_soup = self.visit_url(comment_url,True)
+            # comment_url = comment_url['href']
+            comment_soup = Website.visit_url(comment_url,True)
             content['comment'] = []
             for p in comment_soup.findAll(name='p'):
                 content['comment'].append(p.get_text().strip())
@@ -105,7 +113,7 @@ class website(object):
     
 
 if __name__ == '__main__':
-    w = website()
+    w = Website()
     soup = w.visit_url("http://news.qq.com/a/20160418/023091.htm")
     w.handle_content_page(soup)
-    #w.visit_url("http://coral.qq.com/1909556775",True)
+    # w.visit_url("http://coral.qq.com/1909556775",True)
