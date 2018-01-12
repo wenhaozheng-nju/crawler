@@ -26,6 +26,6 @@ def process(start_url):
         time.sleep(10)
 
 if __name__ == "__main__":
-    process("http://news.qq.com/")
+    process("http://new.qq.com/")
 
 

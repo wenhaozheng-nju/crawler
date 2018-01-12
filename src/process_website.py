@@ -44,7 +44,7 @@ class website(object):
         url_ele = url.split("/")
         domain_name = url_ele[2]
         #print("domin_name is:",domain_name) #test
-        if len(url_ele) >= 3 and url_ele[-2].isdigit() and url_ele[-3] == "a":
+        if (len(url_ele) >= 3 and url_ele[-2].isdigit() and url_ele[-3] == "a") or url_ele[-2] == 'cmsn':
             print ("it is content page!")
             content = self.handle_content_page(soup)
             content['time'] = url_ele[-2]
@@ -82,7 +82,7 @@ class website(object):
                 val = p_attrs[key]
                 if isinstance(val,list):
                     val = val[0]
-                if val.lower().startswith('text') and p.script is None: # p maybe contain video
+                if (val.lower().startswith('text') and p.script is None) or val == 'one-p': # p maybe contain video
                     #print val
                     content['body'] += p.get_text().strip()+"\t"
 
