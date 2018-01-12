@@ -42,9 +42,9 @@ class website(object):
             print "visit url error",url
             return None
         url_ele = url.split("/")
-        domain_name = url_ele[2]
+        domain_name = ".".join(url_ele[2].split(".")[1:]) # qq.com
         #print("domin_name is:",domain_name) #test
-        if (len(url_ele) >= 3 and url_ele[-2].isdigit() and url_ele[-3] == "a") or url_ele[-2] == 'cmsn':
+        if (len(url_ele) >= 3 and url_ele[-2].isdigit() and url_ele[-3] == "a") or url_ele[-2] in ['cmsn','omn']:
             print ("it is content page!")
             content = self.handle_content_page(soup)
             content['time'] = url_ele[-2]
