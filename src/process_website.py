@@ -36,7 +36,11 @@ class website(object):
         return texts
 
     def qq_news_process(self,url):
-        soup = self.visit_url(url)
+        try:
+            soup = self.visit_url(url)
+        except:
+            print "visit url error",url
+            return None
         url_ele = url.split("/")
         domain_name = url_ele[2]
         #print("domin_name is:",domain_name) #test
@@ -96,10 +100,14 @@ class website(object):
             content['comment'] = []
         else:
 #        comment_url = comment_url['href']
-            comment_soup = self.visit_url(comment_url,True)
-            content['comment'] = []
-            for p in comment_soup.findAll(name='p'):
-                content['comment'].append(p.get_text().strip())
+            try:
+                comment_soup = self.visit_url(comment_url,True)
+                content['comment'] = []
+                for p in comment_soup.findAll(name='p'):
+                    content['comment'].append(p.get_text().strip())
+            except:
+                print "error in read comment url",comment_url
+                content['comment'] = []
         content['comment'] = "\t".join(content['comment'])
         return content
     

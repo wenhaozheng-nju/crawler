@@ -21,7 +21,8 @@ def process(start_url):
         if trigger_func(u):
             url = u.get_url()
             res = process_func(url)
-            post_proc_func(res,url,u)
+            if res:
+                post_proc_func(res,url,u)
         time.sleep(10)
 
 if __name__ == "__main__":
