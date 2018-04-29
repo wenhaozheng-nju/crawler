@@ -17,8 +17,12 @@ Using Python to crawl the popular website
 - Crawl news website (http://news.qq.com)
 
 ### Run
+If you want to run in single machine, please switch to __zwh__ branch.
+
 ```shell-script
     python main.py
 ```
+
+
 ### Result
 The result can be found in data/result.csv. The csv contains title, body, time, comments.
